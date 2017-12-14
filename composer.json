@@ -1,0 +1,30 @@
+{
+    "name": "atukai/dashboard-grid",
+    "description": "Rapid admin panel builder",
+    "homepage": "https://github.com/atukai/dashboard",
+    "authors": [
+        {
+            "name": "Alexander Tukai",
+            "email": "atukai@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^7.1",
+        "zendframework/zend-paginator": "^2.8",
+        "pagerfanta/pagerfanta": "^1.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "*",
+        "squizlabs/php_codesniffer": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Dashboard\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "DashboardTest\\": "tests/Dashboard"
+        }
+    }
+}
