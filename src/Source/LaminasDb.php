@@ -2,40 +2,44 @@
 
 namespace Gridly\Source;
 
-use Gridly\Schema;
-use Gridly\Schema\Filter\Filter;
-use Gridly\Schema\Filter\Exception;
-use Gridly\Schema\Filter\FilterSet;
 use Gridly\Schema\Order\Order;
-use PDOStatement;
+use Gridly\Schema\Schema;
+use Gridly\Schema\Filter\Exception;
+use Gridly\Schema\Filter\Filter;
+use Gridly\Schema\Filter\FilterSet;
+use Laminas\Db\Adapter\Adapter;
 
-class Pdo implements Source
+class LaminasDb implements Source
 {
-    private \PDO $pdo;
+    private Adapter $adapter;
     private string $tableName;
+    private string $baseQuery;
     private string $query;
     private array $queryParams;
-    private Schema\Schema $schema;
+    private Schema $schema;
     
-    public function __construct(\PDO $pdo, string $tableName)
+    public function __construct(Adapter $adapter, string $tableName, array $columnNames = [])
     {
-        $this->pdo = $pdo;
+        $this->adapter = $adapter;
         $this->tableName = '`' . str_replace('`', '``', $tableName) . '`';
-        $this->query = 'SELECT * FROM ' . $this->tableName;
+        $this->baseQuery = 'SELECT ' . implode(', ', $columnNames)  .' FROM ' . $this->tableName;
+        $this->query = $this->baseQuery;
         $this->queryParams = [];
     }
     
     /**
      * @throws Exception
      */
-    public function applySchema(Schema\Schema $schema): void
+    public function applySchema(Schema $schema): void
     {
         $this->schema = $schema;
+        $this->query = $this->baseQuery;
+        
         $this->filter($schema->getFilters());
         $this->sort($schema->getOrder());
     }
     
-    public function getSchema(): Schema\Schema
+    public function getSchema(): Schema
     {
         return $this->schema;
     }
@@ -43,34 +47,28 @@ class Pdo implements Source
     public function getItems(int $offset, int $limit): iterable
     {
         $query = $this->query;
-        
-        $limitStatement = ' LIMIT ';
-        $limitStatement .= $offset . ', ' . $limit;
+        $query .= ' LIMIT ' . $offset . ', ' . $limit;
 
-        $query .= $limitStatement;
-
-        /** @var PDOStatement $stmt */
-        $stmt = $this->pdo->prepare($query);
-        $stmt->execute($this->queryParams);
-
-        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        return $this->adapter->query($query)->execute($this->queryParams);
     }
-
+    
     public function count(): int
     {
-        $stm = $this->pdo->prepare($this->query);
-        $stm->execute($this->queryParams);
-        
-        return count($stm->fetchAll());
+        return count($this->adapter->query($this->query)->execute($this->queryParams));
     }
     
     public function countAll(): int
     {
-        $query = 'SELECT COUNT(*) FROM ' . $this->tableName;
-        return $this->pdo->query($query)->fetchColumn();
+        $query = 'SELECT COUNT(*) as cnt FROM ' . $this->tableName;
+        $stm = $this->adapter->query($query)->execute();
+        $result = $stm->current();
+        
+        return $result['cnt'];
     }
     
     /**
+     * @param FilterSet $filters
+     * @return void
      * @throws Exception
      */
     private function filter(FilterSet $filters): void
@@ -88,6 +86,16 @@ class Pdo implements Source
             switch ($filter->getOperand()) {
                 case Filter::OP_EQUAL:
                     $this->query .= $filter->getColumnName() . ' = ?';
+                    $this->queryParams[] = $filter->getValue();
+                    break;
+                
+                case Filter::OP_NOT_EQUAL:
+                    $this->query .= $filter->getColumnName() . ' != ?';
+                    $this->queryParams[] = $filter->getValue();
+                    break;
+                
+                case Filter::OP_GREATER:
+                    $this->query .= $filter->getColumnName() . ' > ?';
                     $this->queryParams[] = $filter->getValue();
                     break;
                 
@@ -109,7 +117,6 @@ class Pdo implements Source
                 $this->query .= ' AND ';
             }
         }
-        
     }
     
     private function sort(?Order $order = null): void

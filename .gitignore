@@ -1,0 +1,9 @@
+.idea
+.env
+vendor/
+/var/cache/*
+!/var/cache/.gitkeep
+phpunit.xml
+.phpunit.result.cache
+examples/grid.yml
+composer.lock

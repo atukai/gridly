@@ -1,0 +1,28 @@
+source:
+    type: Gridly\Source\Doctrine
+    entityClass: App\Entity\Entity
+
+columns:
+    id:
+        label: "#"
+        type: integer
+        filterable: true
+        sortable: true
+    name:
+        label: "Name"
+        type: string
+        filterable: true
+        sortable: true
+    isActive:
+        visible: false
+
+schema:
+    order:
+        id: desc
+
+    filters:
+    #    active: "eq:1"
+    #    group_id: "gt:100"
+
+paginator:
+    itemsPerPage: 15

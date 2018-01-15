@@ -8,7 +8,7 @@
     convertWarningsToExceptions="true"
 >   
     <testsuites>
-        <testsuite name="Dashboard TestSuite">
+        <testsuite name="Gridly TestSuite">
             <directory suffix="Test.php">./tests/</directory>
         </testsuite>
     </testsuites>

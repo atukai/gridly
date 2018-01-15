@@ -1,0 +1,17 @@
+<nav>
+    <ul class="pagination pagination-sm">
+        <li class="page-item{% if page == 1 %} disabled{% endif %}">
+            <a class="page-link" href="?page={{ page - 1 }}&filters={{ filtersQuery }}" aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+            </a>
+        </li>
+        <li class="page-item active" aria-current="page">
+            <a class="page-link" href="#">{{ page }} / {{ totalPages }}</a>
+        </li>
+        <li class="page-item{% if page == totalPages %} disabled{% endif %}">
+            <a class="page-link" href="?page={{ page + 1 }}&filters={{ filtersQuery }}" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+            </a>
+        </li>
+    </ul>
+</nav>

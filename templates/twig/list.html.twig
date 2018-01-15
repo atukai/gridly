@@ -1,0 +1,45 @@
+<table class="table table-striped table-hover" id="gridly-table">
+    <thead>
+        <tr>
+            <th>
+                <input type="checkbox" onclick="toggle(this);">
+            </th>
+            {% for header in data.headers %}
+                <th scope="col">
+                    {{ header.label }}
+                    {% if header.isSortable %}<i class="bi bi-sort-down"/>{% endif %}
+                    {% if header.isFilterable %}<i class="bi bi-funnel"></i>{% endif %}
+                </th>
+            {% endfor %}
+            <th class="text-center">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for row in data.rows %}
+        <tr>
+            <td>
+                <input type="checkbox" value="" id="item_id_" name="items[]"/>
+            </td>
+            {% for field in row %}
+                <td scope="row">{{ field.value|raw }}</td>
+            {% endfor %}
+            <td class="text-center">...</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+    <caption>
+        Found {{ foundItems}}/{{ totalItems }} items
+        <span class="float-end">{{ include('paging.html.twig') }}</span>
+    </caption>
+</table>
+
+<script>
+    function toggle(source) {
+        var checkboxes = document.querySelectorAll('#gridly-table input[type="checkbox"]');
+        for (var i = 0; i < checkboxes.length; i++) {
+            if (checkboxes[i] != source) {
+                checkboxes[i].checked = source.checked;
+            }
+        }
+    }
+</script>
