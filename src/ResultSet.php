@@ -6,7 +6,6 @@ use ArrayIterator;
 use Countable;
 use Gridly\Column\Column;
 use Gridly\Column\Definitions;
-use Gridly\Column\Exception;
 use Gridly\Row\Row;
 use IteratorAggregate;
 
@@ -17,13 +16,10 @@ class ResultSet implements Countable, IteratorAggregate
     /** @var Row[] */
     private array $rows;
     
-    /**
-     * @throws Exception
-     */
-    public function __construct(iterable $data, Definitions $columnDefinitions, array $columnDecorators = [])
+    public function __construct(iterable $data, Definitions $columnDefinitions)
     {
         $this->rows = [];
-        $this->prepareRows($data, $columnDefinitions, $columnDecorators);
+        $this->prepareRows($data, $columnDefinitions);
     }
     
     public function getHeadersRow(): Row
@@ -46,10 +42,7 @@ class ResultSet implements Countable, IteratorAggregate
         return new ArrayIterator($this->rows);
     }
     
-    /**
-     * @throws Exception
-     */
-    private function prepareRows(iterable $entries, Definitions $columnDefinitions, array $columnDecorators = []): void
+    private function prepareRows(iterable $entries, Definitions $columnDefinitions): void
     {
         foreach ($entries as $i => $entry) {
             $row = new Row();
@@ -69,10 +62,13 @@ class ResultSet implements Countable, IteratorAggregate
                     $columnDefinition->isSortable(),
                     $columnDefinition->isFilterable()
                 );
-                
-                if (isset($columnDecorators[$column->name()])) {
-                    $decorator = $columnDecorators[$column->name()];
-                    $column = $decorator($column, $entry);
+    
+                /**
+                 * Check if decorators are added for column.
+                 * Run decorators pipeline for column
+                 */
+                if (!$columnDefinition->getDecorators()->isEmpty()) {
+                    $column = $columnDefinition->getDecorators()($column, $entry);
                 }
 
                 $row->addColumn($column);

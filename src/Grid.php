@@ -13,7 +13,11 @@ class Grid
 {
     private const DEFAULT_TITLE = 'Entries';
     
+    /**
+     * Grid title
+     */
     private string $title;
+    
     /**
      * Data source
      */
@@ -25,13 +29,6 @@ class Grid
     private Definitions $columnDefinitions;
     
     /**
-     * Data column decorators
-     *
-     * @var array<string, DecoratorPipeline>
-     */
-    private array $columnDecorators;
-    
-    /**
      * Paginator for paging data rows
      */
     private Paginator $paginator;
@@ -41,7 +38,6 @@ class Grid
         $this->title = self::DEFAULT_TITLE;
         $this->source = $source;
         $this->columnDefinitions = $columnDefinitions;
-        $this->columnDecorators = [];
         $this->paginator = $paginator;
     }
     
@@ -55,29 +51,12 @@ class Grid
         $this->title = $title ?? self::DEFAULT_TITLE;
     }
     
-    /**
-     * @throws Column\Exception
-     */
-    public function getPageItems(?int $page = 1): ResultSet
+    public function getPageItems(int $page = 1): ResultSet
     {
         return new ResultSet(
             $this->paginator->getPageItems($page),
-            $this->columnDefinitions,
-            $this->columnDecorators
+            $this->columnDefinitions
         );
-    }
-    
-    public function addColumnDecorator(string $columnName, callable $decorator): Grid
-    {
-        if (!isset($this->columnDecorators[$columnName])) {
-            $this->columnDecorators[$columnName] = new DecoratorPipeline();
-        }
-
-        /** @var DecoratorPipeline $pipeline */
-        $pipeline = $this->columnDecorators[$columnName];
-        $pipeline->pipe($decorator);
-
-        return $this;
     }
     
     public function getSchemaFilterParams(): array
@@ -105,7 +84,7 @@ class Grid
         return $this->source->countAll();
     }
     
-    public function render(Provider $pageNumberProvider, Renderer $renderer): string
+    public function render(Provider $pageNumberProvider, Renderer $renderer): ?string
     {
         return $renderer->render($this, $pageNumberProvider->provide());
     }

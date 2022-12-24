@@ -2,6 +2,8 @@
 
 namespace Gridly\Column;
 
+use Gridly\Column\Decorator\DecoratorPipeline;
+
 class Definition
 {
     private Type $type;
@@ -9,6 +11,8 @@ class Definition
     private bool $isSortable;
     private bool $isFilterable;
     private bool $isVisible;
+    
+    private DecoratorPipeline $decorators;
     
     public function __construct(
         ?Type $type = null,
@@ -22,6 +26,8 @@ class Definition
         $this->isSortable = $isSortable;
         $this->isFilterable = $isFilterable;
         $this->isVisible = $isVisible;
+        
+        $this->decorators = new DecoratorPipeline();
     }
 
     public static function fromArray(array $data): Definition
@@ -58,6 +64,16 @@ class Definition
     public function isVisible(): bool
     {
         return $this->isVisible;
+    }
+    
+    public function addColumnDecorator(callable $decorator): void
+    {
+        $this->decorators->pipe($decorator);
+    }
+    
+    public function getDecorators(): DecoratorPipeline
+    {
+        return $this->decorators;
     }
     
     private static function type(?array $data = []): ?Type

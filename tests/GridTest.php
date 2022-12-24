@@ -10,6 +10,19 @@ use PHPUnit\Framework\TestCase;
 
 class GridTest extends TestCase
 {
+    public function testGridHasDefaultTitle(): void
+    {
+        $grid = $this->createGrid();
+        self::assertEquals('Entries', $grid->getTitle());
+    }
+    
+    public function testGridReturnGivenTitle(): void
+    {
+        $grid = $this->createGrid();
+        $grid->setTitle('Title');
+        self::assertEquals('Title', $grid->getTitle());
+    }
+    
     public function testGetPageItemsMultipleTimes(): void
     {
         $grid = $this->createGrid();
