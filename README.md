@@ -10,7 +10,7 @@
 
 - Twig
 - Json
-- Symfony/Console
+- Symfony Console Table
 
 ## Examples
 

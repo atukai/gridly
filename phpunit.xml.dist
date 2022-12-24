@@ -1,24 +1,16 @@
-<phpunit 
-	bootstrap="./tests/Bootstrap.php" 
-	colors="true"
-	stopOnError="true"
-	stopOnFailure="false"
-	convertErrorsToExceptions="true"
-    convertNoticesToExceptions="true" 
-    convertWarningsToExceptions="true"
->   
-    <testsuites>
-        <testsuite name="Gridly TestSuite">
-            <directory suffix="Test.php">./tests/</directory>
-        </testsuite>
-    </testsuites>
-    
-	<filter>
-	   <whitelist>
-            <directory suffix=".php">./src</directory>
-            <exclude>
-                <directory>./tests</directory>
-            </exclude>
-        </whitelist>
-	</filter>
+<?xml version="1.0"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" bootstrap="./tests/Bootstrap.php" colors="true" stopOnError="true" stopOnFailure="false" convertErrorsToExceptions="true" convertNoticesToExceptions="true" convertWarningsToExceptions="true" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd">
+  <coverage>
+    <include>
+      <directory suffix=".php">./src</directory>
+    </include>
+    <exclude>
+      <directory>./tests</directory>
+    </exclude>
+  </coverage>
+  <testsuites>
+    <testsuite name="Gridly TestSuite">
+      <directory suffix="Test.php">./tests/</directory>
+    </testsuite>
+  </testsuites>
 </phpunit>

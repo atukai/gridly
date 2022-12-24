@@ -36,7 +36,7 @@ class SymfonyConsoleTableRenderer implements Renderer
             $table->addRow($rowData);
         }
     
-        $table->setHeaderTitle(sprintf('Entries: %d/%d', count($data), $grid->getTotalItems()));
+        $table->setHeaderTitle(sprintf($grid->getTitle() . ': %d/%d', count($data), $grid->getTotalItems()));
         $table->setFooterTitle(sprintf('Page: %d/%d', $page, $grid->getTotalPages()));
         $table->render();
         

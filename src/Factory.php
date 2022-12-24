@@ -57,6 +57,9 @@ class Factory
         }
         
         // GRID
-        return new Grid($source, $columnDefinitions, $paginator);
+        $grid = new Grid($source, $columnDefinitions, $paginator);
+        $grid->setTitle($config['title'] ?? '');
+        
+        return $grid;
     }
 }

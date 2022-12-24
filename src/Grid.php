@@ -11,6 +11,9 @@ use Gridly\Source\Source;
 
 class Grid
 {
+    private const DEFAULT_TITLE = 'Entries';
+    
+    private string $title;
     /**
      * Data source
      */
@@ -35,10 +38,21 @@ class Grid
     
     public function __construct(Source $source, Definitions $columnDefinitions, Paginator $paginator)
     {
+        $this->title = self::DEFAULT_TITLE;
         $this->source = $source;
         $this->columnDefinitions = $columnDefinitions;
         $this->columnDecorators = [];
         $this->paginator = $paginator;
+    }
+    
+    public function getTitle(): string
+    {
+        return $this->title;
+    }
+    
+    public function setTitle(string $title): void
+    {
+        $this->title = $title ?? self::DEFAULT_TITLE;
     }
     
     /**

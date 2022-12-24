@@ -2,6 +2,7 @@
 
 namespace Gridly\Test;
 
+use Gridly\Column\Definitions;
 use Gridly\Grid;
 use Gridly\Paginator\Paginator;
 use Gridly\Schema\Schema;
@@ -29,10 +30,10 @@ class ResultSetTest extends TestCase
     protected function createGrid(): Grid
     {
         $paginatorMock = $this->createMock(Paginator::class);
+        $definitionsMock = $this->createMock(Definitions::class);
         $sourceMock = $this->createMock(Source::class);
-        $schemaMock = $this->createMock(Schema::class);
         
-        return new Grid($sourceMock, $schemaMock, $paginatorMock);
+        return new Grid($sourceMock, $definitionsMock, $paginatorMock);
     }
     
     protected function createGridWithData(): Grid
@@ -57,8 +58,8 @@ class ResultSetTest extends TestCase
             );
 
         $sourceMock = $this->createMock(Source::class);
-        $schemaMock = $this->createMock(Schema::class);
+        $definitionsMock = $this->createMock(Definitions::class);
 
-        return new Grid($sourceMock, $schemaMock, $paginatorMock);
+        return new Grid($sourceMock, $definitionsMock, $paginatorMock);
     }
 }

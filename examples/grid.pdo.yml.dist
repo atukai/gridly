@@ -1,3 +1,5 @@
+title: Grid Title
+
 source:
   type: Gridly\Source\Pdo
   dsn: mysql:host=127.0.0.1:3306;dbname=database;charset=utf8
