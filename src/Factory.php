@@ -8,7 +8,7 @@ use Gridly\Column\Definitions;
 use Gridly\Paginator\PaginatorFactory;
 use Gridly\Source\Doctrine;
 use Gridly\Source\Exception;
-use Gridly\Source\LaminasDb;
+use Gridly\Source\LaminasDbAdapter;
 use Gridly\Source\Pdo;
 use Laminas\Db\Adapter\Adapter;
 use Psr\Http\Message\ServerRequestInterface;
@@ -40,7 +40,7 @@ class Factory
     
         $source = match ($config['source']['type']) {
             Pdo::class => Source\Factory::pdo($config, $schema),
-            LaminasDb::class => Source\Factory::laminasDb($config, $schema, $provider),
+            LaminasDbAdapter::class => Source\Factory::laminasDb($config, $schema, $provider),
             Doctrine::class => Source\Factory::doctrine($config, $schema, $provider),
             default => throw Exception::unsupportedSourceClass($config['type']),
         };
@@ -57,9 +57,6 @@ class Factory
         }
         
         // GRID
-        $grid = new Grid($source, $columnDefinitions, $paginator);
-        $grid->setTitle($config['title'] ?? '');
-        
-        return $grid;
+        return new Grid($config['title'] ?? '', $source, $columnDefinitions, $paginator);
     }
 }

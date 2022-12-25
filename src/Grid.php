@@ -2,7 +2,6 @@
 
 namespace Gridly;
 
-use Gridly\Column\Decorator\DecoratorPipeline;
 use Gridly\Column\Definitions;
 use Gridly\Paginator\PageNumber\Provider;
 use Gridly\Paginator\Paginator;
@@ -11,8 +10,6 @@ use Gridly\Source\Source;
 
 class Grid
 {
-    private const DEFAULT_TITLE = 'Entries';
-    
     /**
      * Grid title
      */
@@ -33,22 +30,22 @@ class Grid
      */
     private Paginator $paginator;
     
-    public function __construct(Source $source, Definitions $columnDefinitions, Paginator $paginator)
+    public function __construct(string $title, Source $source, Definitions $columnDefinitions, Paginator $paginator)
     {
-        $this->title = self::DEFAULT_TITLE;
+        $this->title = $title;
         $this->source = $source;
         $this->columnDefinitions = $columnDefinitions;
         $this->paginator = $paginator;
     }
     
+    public function setTitle(string $title): void
+    {
+        $this->title = $title;
+    }
+    
     public function getTitle(): string
     {
         return $this->title;
-    }
-    
-    public function setTitle(string $title): void
-    {
-        $this->title = $title ?? self::DEFAULT_TITLE;
     }
     
     public function getPageItems(int $page = 1): ResultSet

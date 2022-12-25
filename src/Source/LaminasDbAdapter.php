@@ -9,7 +9,7 @@ use Gridly\Schema\Filter\Filter;
 use Gridly\Schema\Filter\FilterSet;
 use Laminas\Db\Adapter\Adapter;
 
-class LaminasDb implements Source
+class LaminasDbAdapter implements Source
 {
     private Adapter $adapter;
     private string $tableName;

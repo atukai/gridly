@@ -10,13 +10,15 @@ use PHPUnit\Framework\TestCase;
 
 class GridTest extends TestCase
 {
-    public function testGridHasDefaultTitle(): void
+    private const DEFAULT_TITLE = 'Entries';
+    
+    public function testGridHasTitle(): void
     {
         $grid = $this->createGrid();
-        self::assertEquals('Entries', $grid->getTitle());
+        self::assertEquals(self::DEFAULT_TITLE, $grid->getTitle());
     }
     
-    public function testGridReturnGivenTitle(): void
+    public function testGridHasGivenTitle(): void
     {
         $grid = $this->createGrid();
         $grid->setTitle('Title');
@@ -36,6 +38,6 @@ class GridTest extends TestCase
         $definitionsMock = $this->createMock(Definitions::class);
         $paginatorMock = $this->createMock(Paginator::class);
     
-        return new Grid($sourceMock, $definitionsMock, $paginatorMock);
+        return new Grid(self::DEFAULT_TITLE, $sourceMock, $definitionsMock, $paginatorMock);
     }
 }

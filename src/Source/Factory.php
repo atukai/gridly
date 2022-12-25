@@ -21,7 +21,7 @@ class Factory
     
     public static function laminasDb(array $config, Schema $schema, Adapter $adapter): Source
     {
-        $source = new LaminasDb($adapter, $config['source']['table'], self::getColumnNames($config));
+        $source = new LaminasDbAdapter($adapter, $config['source']['table'], self::getColumnNames($config));
         $source->applySchema($schema);
         
         return $source;

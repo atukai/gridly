@@ -33,7 +33,7 @@ class ResultSetTest extends TestCase
         $definitionsMock = $this->createMock(Definitions::class);
         $sourceMock = $this->createMock(Source::class);
         
-        return new Grid($sourceMock, $definitionsMock, $paginatorMock);
+        return new Grid('Title', $sourceMock, $definitionsMock, $paginatorMock);
     }
     
     protected function createGridWithData(): Grid
@@ -60,6 +60,6 @@ class ResultSetTest extends TestCase
         $sourceMock = $this->createMock(Source::class);
         $definitionsMock = $this->createMock(Definitions::class);
 
-        return new Grid($sourceMock, $definitionsMock, $paginatorMock);
+        return new Grid('Title', $sourceMock, $definitionsMock, $paginatorMock);
     }
 }
