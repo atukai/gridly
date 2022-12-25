@@ -4,7 +4,9 @@ namespace Gridly\Test;
 
 use Gridly\Column\Definitions;
 use Gridly\Grid;
+use Gridly\Paginator\PageNumber\Provider;
 use Gridly\Paginator\Paginator;
+use Gridly\Renderer\Renderer;
 use Gridly\Source\Source;
 use PHPUnit\Framework\TestCase;
 
@@ -32,12 +34,26 @@ class GridTest extends TestCase
         self::assertNotNull($grid->getPageItems());
     }
     
-    private function createGrid(): Grid
+    public function testRender(): void
     {
-        $sourceMock = $this->createMock(Source::class);
-        $definitionsMock = $this->createMock(Definitions::class);
-        $paginatorMock = $this->createMock(Paginator::class);
+        $renderer = $this->createMock(Renderer::class);
+        $renderer->expects($this->once())->method('render');
+        
+        $grid = $this->createGrid();
+        $grid->render($this->createMock(Provider::class), $renderer);
+    }
     
-        return new Grid(self::DEFAULT_TITLE, $sourceMock, $definitionsMock, $paginatorMock);
+    private function createGrid(
+        string $title = null,
+        Source $source = null,
+        Definitions $definitions = null,
+        Paginator $paginator = null
+    ): Grid {
+        $title = $title ?? self::DEFAULT_TITLE;
+        $source = $source ?? $this->createMock(Source::class);
+        $definitions = $definitions ?? $this->createMock(Definitions::class);
+        $paginator = $paginator ?? $this->createMock(Paginator::class);
+    
+        return new Grid($title, $source, $definitions, $paginator);
     }
 }
