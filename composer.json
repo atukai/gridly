@@ -1,7 +1,8 @@
 {
     "name": "atukai/gridly",
-    "license": "MIT",
     "description": "Gridly - PHP Grid Manager",
+    "type": "library",
+    "license": "MIT",
     "homepage": "https://github.com/atukai/gridly",
     "authors": [
         {

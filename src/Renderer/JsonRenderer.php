@@ -2,14 +2,12 @@
 
 namespace Gridly\Renderer;
 
-use Gridly\Column\Exception;
 use Gridly\Grid;
 use JsonException;
 
 class JsonRenderer implements Renderer
 {
     /**
-     * @throws Exception
      * @throws JsonException
      */
     public function render(Grid $grid, int $page): string

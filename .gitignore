@@ -1,9 +1,20 @@
-.idea
-.env
+# IDEA
+.idea/
+*.iml
+
+# Composer
 vendor/
-/var/cache/*
-!/var/cache/.gitkeep
-phpunit.xml
-.phpunit.result.cache
-examples/grid.yml
 composer.lock
+composer.phar
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Other
+.phpunit.result.cache
+.php_cs.cache
+clover.xml
+.env
+builds
+examples/grid.yml

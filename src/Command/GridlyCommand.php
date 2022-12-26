@@ -3,25 +3,35 @@
 namespace Gridly\Command;
 
 use Gridly\Factory;
-use Gridly\Paginator\Laminas\LaminasPaginatorFactory;
 use Gridly\Paginator\PageNumber\SymfonyConsoleOptionProvider;
+use Gridly\Paginator\PaginatorFactory;
 use Gridly\Renderer\SymfonyConsoleTableRenderer;
 use Gridly\Schema\Order\Exception;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
+#[AsCommand(
+    name: 'gridly',
+    description: 'Print list of entries.',
+    aliases: ['gridly:list']
+)]
 class GridlyCommand extends Command
 {
-    protected static $defaultName = 'gridly';
+    private PaginatorFactory $paginatorFactory;
+    
+    public function __construct(PaginatorFactory $paginatorFactory, string $name = null)
+    {
+        $this->paginatorFactory = $paginatorFactory;
+        parent::__construct($name);
+    }
     
     public function configure(): void
     {
-        $this->setDescription('List of entries.')
-            ->setHelp('Print a list of entries')
-            ->addArgument('schema', InputArgument::REQUIRED, 'Grid schema file.')
+        $this->addArgument('schema', InputArgument::REQUIRED, 'Grid schema file.')
             ->addOption('page', 'p', InputOption::VALUE_OPTIONAL, 'Page number to display.', 1);
     }
     
@@ -32,7 +42,7 @@ class GridlyCommand extends Command
      */
     public function execute(InputInterface $input, OutputInterface $output): int
     {
-        $grid = Factory::fromYaml($input->getArgument('schema'), new LaminasPaginatorFactory());
+        $grid = Factory::fromYaml($input->getArgument('schema'), $this->paginatorFactory);
         $grid->render(new SymfonyConsoleOptionProvider($input), new SymfonyConsoleTableRenderer($output));
         
         return Command::SUCCESS;

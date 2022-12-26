@@ -24,7 +24,6 @@ class TwigRenderer implements Renderer
      * @throws LoaderError
      * @throws RuntimeError
      * @throws SyntaxError
-     * @throws Exception
      */
     public function render(Grid $grid, int $page): ?string
     {
