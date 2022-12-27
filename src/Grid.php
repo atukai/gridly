@@ -75,6 +75,7 @@ class Grid
 
     public function render(Provider $pageNumberProvider, Renderer $renderer): ?string
     {
-        return $renderer->render($this, $pageNumberProvider->provide());
+        var_dump($renderer->render($this, $pageNumberProvider->provide()));
+        return null;
     }
 }

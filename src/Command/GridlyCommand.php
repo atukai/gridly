@@ -5,6 +5,7 @@ namespace Gridly\Command;
 use Gridly\GridFactory;
 use Gridly\Paginator\PageNumber\SymfonyConsoleOptionProvider;
 use Gridly\Paginator\PaginatorFactory;
+use Gridly\Renderer\JsonRenderer;
 use Gridly\Renderer\SymfonyConsoleTableRenderer;
 use Gridly\Schema\Order\Exception;
 use Symfony\Component\Console\Attribute\AsCommand;
