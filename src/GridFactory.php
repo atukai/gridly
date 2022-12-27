@@ -14,7 +14,7 @@ use Laminas\Db\Adapter\Adapter;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Component\Yaml\Yaml;
 
-class Factory
+class GridFactory
 {
     /**
      * @throws Schema\Filter\Exception
@@ -29,25 +29,25 @@ class Factory
     ): Grid {
         // CONFIG
         $config = Yaml::parseFile($fileName);
-    
+
         // SCHEMA
         $schema = Schema\Factory::create($config, $request);
-        
+
         // SOURCE
         if (!isset($config['source']['type'])) {
             throw Exception::sourceClassNotProvided();
         }
-    
+
         $source = match ($config['source']['type']) {
             Pdo::class => Source\Factory::pdo($config, $schema),
             LaminasDbAdapter::class => Source\Factory::laminasDb($config, $schema, $provider),
             Doctrine::class => Source\Factory::doctrine($config, $schema, $provider),
             default => throw Exception::unsupportedSourceClass($config['type']),
         };
-    
+
         // PAGINATOR
-        $paginator = $paginatorFactory::create($source, $config['paginator']);
-    
+        $storage = new Storage($source, $paginatorFactory, $config['paginator']);
+
         // COLUMN DEFINITIONS
         $columnDefinitions = new Definitions();
         if (isset($config['columns'])) {
@@ -55,8 +55,8 @@ class Factory
                 $columnDefinitions->add($name, Definition::fromArray($data));
             }
         }
-        
+
         // GRID
-        return new Grid($config['title'] ?? '', $source, $columnDefinitions, $paginator);
+        return new Grid($config['title'] ?? '', $storage, $columnDefinitions);
     }
 }

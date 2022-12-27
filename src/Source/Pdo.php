@@ -35,9 +35,9 @@ class Pdo implements Source
         $this->sort($schema->getOrder());
     }
     
-    public function getSchema(): Schema\Schema
+    public function getSchemaParams(): array
     {
-        return $this->schema;
+        return $this->schema->toArray();
     }
     
     public function getItems(int $offset, int $limit): iterable

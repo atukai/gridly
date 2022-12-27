@@ -2,7 +2,6 @@
 
 namespace Gridly\Renderer;
 
-use Gridly\Column\Exception;
 use Gridly\Grid;
 use Twig\Environment;
 use Twig\Error\LoaderError;
@@ -13,13 +12,13 @@ class TwigRenderer implements Renderer
 {
     private Environment $twig;
     private string $template;
-    
+
     public function __construct(Environment $twig, string $template)
     {
         $this->twig = $twig;
         $this->template = $template;
     }
-    
+
     /**
      * @throws LoaderError
      * @throws RuntimeError
@@ -30,12 +29,12 @@ class TwigRenderer implements Renderer
         $data = [
             'data' => $grid->getPageItems($page),
             'totalItems' => $grid->getTotalItems(),
-            'foundItems' => $grid->getFoundItems(),
+            'foundItems' => $grid->countFoundItems(),
             'page' => $grid->getCurrentPage(),
             'totalPages' => $grid->getTotalPages(),
-            'filterParams' => $grid->getSchemaFilterParams(),
+            'filterParams' => $grid->getSchemaParams(),
         ];
-        
+
         return $this->twig->render($this->template, $data);
     }
 }

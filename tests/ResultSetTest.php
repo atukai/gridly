@@ -4,9 +4,7 @@ namespace Gridly\Test;
 
 use Gridly\Column\Definitions;
 use Gridly\Grid;
-use Gridly\Paginator\Paginator;
-use Gridly\Schema\Schema;
-use Gridly\Source\Source;
+use Gridly\Storage;
 use PHPUnit\Framework\TestCase;
 
 class ResultSetTest extends TestCase
@@ -14,11 +12,11 @@ class ResultSetTest extends TestCase
     public function testEmptyResultSetCount(): void
     {
         $grid = $this->createGrid();
-        
+
         $result = $grid->getPageItems();
         self::assertEquals(0, $result->count());
     }
-    
+
     public function testNotEmptyResultSetCount(): void
     {
         $grid = $this->createGridWithData();
@@ -26,20 +24,19 @@ class ResultSetTest extends TestCase
         $result = $grid->getPageItems();
         self::assertEquals(2, $result->count());
     }
-    
+
     protected function createGrid(): Grid
     {
-        $paginatorMock = $this->createMock(Paginator::class);
+        $storage = $this->createMock(Storage::class);
         $definitionsMock = $this->createMock(Definitions::class);
-        $sourceMock = $this->createMock(Source::class);
-        
-        return new Grid('Title', $sourceMock, $definitionsMock, $paginatorMock);
+
+        return new Grid('Title', $storage, $definitionsMock);
     }
-    
+
     protected function createGridWithData(): Grid
     {
-        $paginatorMock = $this->createMock(Paginator::class);
-        $paginatorMock
+        $storageMock = $this->createMock(Storage::class);
+        $storageMock
             ->expects(self::once())
             ->method('getPageItems')
             ->willReturn(
@@ -57,9 +54,8 @@ class ResultSetTest extends TestCase
                 ]
             );
 
-        $sourceMock = $this->createMock(Source::class);
         $definitionsMock = $this->createMock(Definitions::class);
 
-        return new Grid('Title', $sourceMock, $definitionsMock, $paginatorMock);
+        return new Grid('Title', $storageMock, $definitionsMock);
     }
 }

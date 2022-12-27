@@ -16,14 +16,14 @@ class DoctrineDbal implements Source
     private QueryBuilder $baseQueryBuilder;
     private QueryBuilder $queryBuilder;
     private Schema\Schema $schema;
-    
+
     public function __construct(Connection $dbal, string $tableName)
     {
         $this->baseQueryBuilder = $dbal->createQueryBuilder();
         $this->baseQueryBuilder->select('*')->from($tableName);
         $this->queryBuilder = clone $this->baseQueryBuilder;
     }
-    
+
     /**
      * @throws Exception
      */
@@ -31,16 +31,16 @@ class DoctrineDbal implements Source
     {
         $this->schema = $schema;
         $this->queryBuilder = $this->baseQueryBuilder;
-        
+
         $this->filter($schema->getFilters());
         $this->sort($schema->getOrder());
     }
-    
-    public function getSchema(): Schema\Schema
+
+    public function getSchemaParams(): array
     {
-        return $this->schema;
+        return $this->schema->toArray();
     }
-    
+
     /**
      * @throws \Doctrine\DBAL\Exception
      */
@@ -49,10 +49,10 @@ class DoctrineDbal implements Source
         $this->queryBuilder
             ->setFirstResult($offset)
             ->setMaxResults($limit);
-        
+
         return $this->queryBuilder->executeQuery()->fetchAllNumeric();
     }
-    
+
     /**
      * @throws \Doctrine\DBAL\Exception
      */
@@ -62,10 +62,10 @@ class DoctrineDbal implements Source
         $countQueryBuilder->select('COUNT(*)')
             ->setFirstResult(0)
             ->setMaxResults(null);
-        
-        return (int)$countQueryBuilder->execute()->fetchOne();
+
+        return (int)$countQueryBuilder->executeQuery()->fetchOne();
     }
-    
+
     /**
      * @throws \Doctrine\DBAL\Exception
      */
@@ -73,7 +73,7 @@ class DoctrineDbal implements Source
     {
         return $this->queryBuilder->executeQuery()->rowCount();
     }
-    
+
     /**
      * @throws Exception
      */
@@ -82,7 +82,7 @@ class DoctrineDbal implements Source
         if ($filters->isEmpty()) {
             return;
         }
-        
+
         foreach ($filters as $filter) {
             switch ($filter->getOperand()) {
                 case Filter::OP_EQUAL:
@@ -101,15 +101,14 @@ class DoctrineDbal implements Source
                     $this->queryBuilder->where(
                         $this->queryBuilder->expr()->like($filter->getColumnName(), '"%' . $filter->getValue() . '%"')
                     );
-                    
+
                     break;
                 default:
                     throw Exception::unsupportedFilterOperand($filter->getOperand(), self::class);
             }
         }
-        
     }
-    
+
     private function sort(Schema\Order\Order $order): void
     {
         $this->queryBuilder->orderBy($order->getColumnName(), $order->getDirection());

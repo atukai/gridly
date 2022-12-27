@@ -4,9 +4,7 @@ namespace Gridly;
 
 use Gridly\Column\Definitions;
 use Gridly\Paginator\PageNumber\Provider;
-use Gridly\Paginator\Paginator;
 use Gridly\Renderer\Renderer;
-use Gridly\Source\Source;
 
 class Grid
 {
@@ -14,73 +12,67 @@ class Grid
      * Grid title
      */
     private string $title;
-    
+
     /**
-     * Data source
+     * Data storage/repository. Includes source and paginator
      */
-    private Source $source;
-    
+    private Storage $storage;
+
     /**
      * Data column definitions
      */
     private Definitions $columnDefinitions;
-    
-    /**
-     * Paginator for paging data rows
-     */
-    private Paginator $paginator;
-    
-    public function __construct(string $title, Source $source, Definitions $columnDefinitions, Paginator $paginator)
+
+    public function __construct(string $title, Storage $storage, Definitions $columnDefinitions)
     {
         $this->title = $title;
-        $this->source = $source;
+        $this->storage = $storage;
         $this->columnDefinitions = $columnDefinitions;
-        $this->paginator = $paginator;
     }
-    
+
     public function setTitle(string $title): void
     {
         $this->title = $title;
     }
-    
+
     public function getTitle(): string
     {
         return $this->title;
     }
-    
+
     public function getPageItems(int $page = 1): ResultSet
     {
         return new ResultSet(
-            $this->paginator->getPageItems($page),
+            $this->storage->getPageItems($page),
             $this->columnDefinitions
         );
     }
-    
-    public function getSchemaFilterParams(): array
+
+    public function getSchemaParams(): array
     {
-        return $this->source->getSchema()->getParams();
+        return $this->storage->getSchemaParams();
     }
-    
+
     public function getCurrentPage(): int
     {
-        return $this->paginator->getCurrentPage();
+        return $this->storage->getCurrentPage();
     }
-    
+
     public function getTotalPages(): int
     {
-        return $this->paginator->getTotalPages();
+        return $this->storage->getTotalPages();
     }
-    
-    public function getFoundItems(): int
+
+    public function countFoundItems(): int
     {
-        return $this->source->count();
+        return $this->storage->count();
     }
-    
+
     public function getTotalItems(): int
     {
-        return $this->source->countAll();
+        return $this->storage->countAll();
     }
-    
+
     public function render(Provider $pageNumberProvider, Renderer $renderer): ?string
     {
         return $renderer->render($this, $pageNumberProvider->provide());

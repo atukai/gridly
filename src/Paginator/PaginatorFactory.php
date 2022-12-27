@@ -6,5 +6,5 @@ use Gridly\Source\Source;
 
 interface PaginatorFactory
 {
-    public static function create(Source $source, array $options): Paginator;
+    public function create(Source $source, array $options): Paginator;
 }

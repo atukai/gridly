@@ -19,15 +19,15 @@ interface Source
     /**
      * Get applied schema
      */
-    public function getSchema(): Schema;
+    public function getSchemaParams(): array;
     
     /**
-     * Count amount of items founded after applying schema
+     * Count total amount of items founded after applying schema
      */
     public function count(): int;
     
     /**
-     * Count total items in data source
+     * Count total amount of items in data source
      */
     public function countAll(): int;
 }

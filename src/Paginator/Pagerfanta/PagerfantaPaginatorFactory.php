@@ -8,7 +8,7 @@ use Pagerfanta\Pagerfanta;
 
 class PagerfantaPaginatorFactory implements PaginatorFactory
 {
-    public static function create(Source $source, array $options): PagerfantaPaginator
+    public function create(Source $source, array $options): PagerfantaPaginator
     {
         $paginator = new PagerfantaPaginator(
             new Pagerfanta(new PagerfantaPaginatorAdapter($source))

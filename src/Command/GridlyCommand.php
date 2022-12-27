@@ -2,7 +2,7 @@
 
 namespace Gridly\Command;
 
-use Gridly\Factory;
+use Gridly\GridFactory;
 use Gridly\Paginator\PageNumber\SymfonyConsoleOptionProvider;
 use Gridly\Paginator\PaginatorFactory;
 use Gridly\Renderer\SymfonyConsoleTableRenderer;
@@ -22,19 +22,19 @@ use Symfony\Component\Console\Output\OutputInterface;
 class GridlyCommand extends Command
 {
     private PaginatorFactory $paginatorFactory;
-    
+
     public function __construct(PaginatorFactory $paginatorFactory, string $name = null)
     {
         $this->paginatorFactory = $paginatorFactory;
         parent::__construct($name);
     }
-    
+
     public function configure(): void
     {
         $this->addArgument('schema', InputArgument::REQUIRED, 'Grid schema file.')
-            ->addOption('page', 'p', InputOption::VALUE_OPTIONAL, 'Page number to display.', 1);
+            ->addOption('page', 'p', InputOption::VALUE_REQUIRED, 'Page number to display.', 1);
     }
-    
+
     /**
      * @throws Exception
      * @throws \Gridly\Schema\Filter\Exception
@@ -42,9 +42,9 @@ class GridlyCommand extends Command
      */
     public function execute(InputInterface $input, OutputInterface $output): int
     {
-        $grid = Factory::fromYaml($input->getArgument('schema'), $this->paginatorFactory);
+        $grid = GridFactory::fromYaml($input->getArgument('schema'), $this->paginatorFactory);
         $grid->render(new SymfonyConsoleOptionProvider($input), new SymfonyConsoleTableRenderer($output));
-        
+
         return Command::SUCCESS;
     }
 }

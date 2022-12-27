@@ -30,7 +30,7 @@ class Schema
         return $this->filters;
     }
     
-    public function getParams(): array
+    public function toArray(): array
     {
         $params['filters'] = $this->getFilters()->toQueryParam();
         $params['order'] = $this->getOrder()?->toQueryParam();
